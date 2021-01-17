@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FrontendController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,10 +15,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [FrontendController::class, 'index'])->name('index');
+Route::get('/details/{slug}', [FrontendController::class, 'details'])->name('details');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
+    Route::get('/cart', [FrontendController::class, 'cart'])->name('cart');
+    Route::post('/checkout', [FrontendController::class, 'checkout'])->name('checkout');
+    Route::get('/checkout/success', [FrontendController::class, 'success'])->name('checkout-success');
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
