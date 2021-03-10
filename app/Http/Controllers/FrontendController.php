@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
+use Midtrans\Snap;
 use App\Models\Cart;
+use Midtrans\Config;
 use App\Models\Product;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\CheckoutRequest;
+use App\Models\TransactionItem;
 
 class FrontendController extends Controller
 {
@@ -50,9 +56,66 @@ class FrontendController extends Controller
         return view('pages.frontend.cart', compact('carts'));
     }
 
-    public function checkout(Request $request)
+    public function checkout(CheckoutRequest $request)
     {
-        // TODO Checkout page
+        $data = $request->all();
+
+        // Get Carts data
+        $carts = Cart::with(['product'])->where('users_id', Auth::user()->id)->get();
+
+        // Add to Transaction data
+        $data['users_id'] = Auth::user()->id;
+        $data['total_price'] = $carts->sum('product.price');
+    
+        // Create Transaction
+        $transaction = Transaction::create($data);
+
+        // Create Transaction item
+        foreach($carts as $cart) {
+            $items[] = TransactionItem::create([
+                'transactions_id' => $transaction->id,
+                'users_id' => $cart->users_id,
+                'products_id' => $cart->products_id,
+            ]);
+        }
+        
+        // Delete cart after transaction
+        Cart::where('users_id', Auth::user()->id)->delete();
+
+        // Konfigurasi midtrans
+        Config::$serverKey = config('services.midtrans.serverKey');
+        Config::$isProduction = config('services.midtrans.isProduction');
+        Config::$isSanitized = config('services.midtrans.isSanitized');
+        Config::$is3ds = config('services.midtrans.is3ds');
+
+        // Setup midtrans variable
+        $midtrans = array(
+            'transaction_details' => array(
+                'order_id' =>  'LX-' . $transaction->id,
+                'gross_amount' => (int) $transaction->total_price,
+            ),
+            'customer_details' => array(
+                'first_name'    => $transaction->name,
+                'email'         => $transaction->email
+            ),
+            'enabled_payments' => array('gopay','bank_transfer'),
+            'vtweb' => array()
+        );
+
+        try {
+            // Ambil halaman payment midtrans
+            $paymentUrl = Snap::createTransaction($midtrans)->redirect_url;
+
+            $transaction->payment_url = $paymentUrl;
+            $transaction->save();
+
+            // Redirect ke halaman midtrans
+            return redirect($paymentUrl);
+        }
+        catch (Exception $e) {
+            return $e;
+        }
+
     }
 
     public function success(Request $request)
