@@ -6,9 +6,10 @@ use App\Models\Transaction;
 use Illuminate\Support\Str;
 use App\Http\Requests\TransactionRequest;
 use App\Models\TransactionItem;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
-class TransactionController extends Controller
+class MyTransactionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,18 +19,14 @@ class TransactionController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Transaction::with(['user']);
+            $query = Transaction::with(['user'])->where('users_id', Auth::user()->id);
 
             return DataTables::of($query)
                 ->addColumn('action', function ($item) {
                     return '
                         <a class="inline-block border border-blue-700 bg-blue-700 text-white rounded-md px-2 py-1 m-1 transition duration-500 ease select-none hover:bg-blue-800 focus:outline-none focus:shadow-outline" 
-                            href="' . route('dashboard.transaction.show', $item->id) . '">
+                            href="' . route('dashboard.my-transaction.show', $item->id) . '">
                             Show
-                        </a>
-                        <a class="inline-block border border-gray-700 bg-gray-700 text-white rounded-md px-2 py-1 m-1 transition duration-500 ease select-none hover:bg-gray-800 focus:outline-none focus:shadow-outline" 
-                            href="' . route('dashboard.transaction.edit', $item->id) . '">
-                            Edit
                         </a>';
                 })
                 ->editColumn('total_price', function ($item) {
@@ -66,13 +63,13 @@ class TransactionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Transaction  $transaction
+     * @param  \App\Models\Transaction  $myTransaction
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function show(Transaction $transaction)
+    public function show(Transaction $myTransaction)
     {
         if (request()->ajax()) {
-            $query = TransactionItem::with(['product'])->where('transactions_id', $transaction->id);
+            $query = TransactionItem::with(['product'])->where('transactions_id', $myTransaction->id);
 
             return DataTables::of($query)
                 ->editColumn('product.price', function ($item) {
@@ -81,36 +78,32 @@ class TransactionController extends Controller
                 ->make();
         }
 
-        return view('pages.dashboard.transaction.show', compact('transaction'));
+        return view('pages.dashboard.transaction.show', [
+            'transaction' => $myTransaction
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Transaction  $transaction
+     * @param  \App\Models\Transaction  $myTransaction
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function edit(Transaction $transaction)
+    public function edit(Transaction $myTransaction)
     {
-        return view('pages.dashboard.transaction.edit',[
-            'item' => $transaction
-        ]);
+        //
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Transaction  $transaction
+     * @param  \App\Models\Transaction  $myTransaction
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(TransactionRequest $request, Transaction $transaction)
+    public function update(TransactionRequest $request, Transaction $myTransaction)
     {
-        $data = $request->all();
-
-        $transaction->update($data);
-
-        return redirect()->route('dashboard.transaction.index');
+        //
     }
 
     /**
@@ -119,7 +112,7 @@ class TransactionController extends Controller
      * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Transaction $transaction)
+    public function destroy(Transaction $myTransaction)
     {
         //
     }
