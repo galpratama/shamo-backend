@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\FrontendController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,5 +24,12 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::post('/checkout', [FrontendController::class, 'checkout'])->name('checkout');
     Route::get('/checkout/success', [FrontendController::class, 'success'])->name('checkout-success');
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::name('dashboard.')->prefix('dashboard')->middleware('admin')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('index');
+
+        Route::middleware(['admin'])->group(function () {
+            Route::resource('product', ProductController::class);
+        });
+    });
 });
