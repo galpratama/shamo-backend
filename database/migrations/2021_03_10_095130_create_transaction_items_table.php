@@ -18,6 +18,8 @@ class CreateTransactionItemsTable extends Migration
             
             $table->bigInteger('users_id');
             $table->bigInteger('products_id');
+            $table->bigInteger('transactions_id');
+            $table->bigInteger('quantity');
 
             $table->timestamps();
         });

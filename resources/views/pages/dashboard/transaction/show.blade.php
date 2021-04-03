@@ -16,6 +16,7 @@
                     { data: 'id', name: 'id', width: '5%'},
                     { data: 'product.name', name: 'product.name' },
                     { data: 'product.price', name: 'product.price' },
+                    { data: 'quantity', name: 'quantity' },
                 ],
             });
         </script>
@@ -31,23 +32,15 @@
                         <tbody>
                             <tr>
                                 <th class="border px-6 py-4 text-right">Name</th>
-                                <td class="border px-6 py-4">{{ $transaction->name }}</td>
+                                <td class="border px-6 py-4">{{ $transaction->user->name }}</td>
                             </tr>
                             <tr>
                                 <th class="border px-6 py-4 text-right">Email</th>
-                                <td class="border px-6 py-4">{{ $transaction->email }}</td>
+                                <td class="border px-6 py-4">{{ $transaction->user->email }}</td>
                             </tr>
                             <tr>
                                 <th class="border px-6 py-4 text-right">Address</th>
                                 <td class="border px-6 py-4">{{ $transaction->address }}</td>
-                            </tr>
-                            <tr>
-                                <th class="border px-6 py-4 text-right">Phone</th>
-                                <td class="border px-6 py-4">{{ $transaction->phone }}</td>
-                            </tr>
-                            <tr>
-                                <th class="border px-6 py-4 text-right">Courier</th>
-                                <td class="border px-6 py-4">{{ $transaction->courier }}</td>
                             </tr>
                             <tr>
                                 <th class="border px-6 py-4 text-right">Payment</th>
@@ -60,6 +53,10 @@
                             <tr>
                                 <th class="border px-6 py-4 text-right">Total Price</th>
                                 <td class="border px-6 py-4">{{ number_format($transaction->total_price) }}</td>
+                            </tr>
+                            <tr>
+                                <th class="border px-6 py-4 text-right">Shipping Price</th>
+                                <td class="border px-6 py-4">{{ number_format($transaction->shipping_price) }}</td>
                             </tr>
                             <tr>
                                 <th class="border px-6 py-4 text-right">Status</th>
@@ -79,6 +76,7 @@
                             <th>ID</th>
                             <th>Produk</th>
                             <th>Harga</th>
+                            <th>Qty</th>
                         </tr>
                         </thead>
                         <tbody></tbody>

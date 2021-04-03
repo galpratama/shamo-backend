@@ -18,7 +18,6 @@ class CreateProductGalleriesTable extends Migration
 
             $table->bigInteger('products_id');
             $table->string('url');
-            $table->boolean('is_featured')->default(false);
 
             $table->softDeletes();
             $table->timestamps();

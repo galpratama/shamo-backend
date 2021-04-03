@@ -11,11 +11,16 @@ class Product extends Model
     use HasFactory, SoftDeletes;
     
     protected $fillable = [
-        'name', 'description', 'price', 'slug'
+        'name', 'description', 'price', 'categories_id'
     ];    
 
     public function galleries()
     {
         return $this->hasMany(ProductGallery::class, 'products_id', 'id');
+    }
+    
+    public function category()
+    {
+        return $this->belongsTo(ProductCategory::class, 'categories_id', 'id');
     }
 }

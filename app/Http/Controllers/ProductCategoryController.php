@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use Illuminate\Support\Str;
-use App\Http\Requests\ProductRequest;
+use App\Http\Requests\ProductCategoryRequest;
 use App\Models\ProductCategory;
 use Yajra\DataTables\Facades\DataTables;
 
-class ProductController extends Controller
+class ProductCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,20 +17,16 @@ class ProductController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Product::with('category');
+            $query = ProductCategory::query();
 
             return DataTables::of($query)
                 ->addColumn('action', function ($item) {
                     return '
-                        <a class="inline-block border border-blue-700 bg-blue-700 text-white rounded-md px-2 py-1 m-1 transition duration-500 ease select-none hover:bg-blue-800 focus:outline-none focus:shadow-outline" 
-                            href="' . route('dashboard.product.gallery.index', $item->id) . '">
-                            Gallery
-                        </a>
                         <a class="inline-block border border-gray-700 bg-gray-700 text-white rounded-md px-2 py-1 m-1 transition duration-500 ease select-none hover:bg-gray-800 focus:outline-none focus:shadow-outline" 
-                            href="' . route('dashboard.product.edit', $item->id) . '">
+                            href="' . route('dashboard.category.edit', $item->id) . '">
                             Edit
                         </a>
-                        <form class="inline-block" action="' . route('dashboard.product.destroy', $item->id) . '" method="POST">
+                        <form class="inline-block" action="' . route('dashboard.category.destroy', $item->id) . '" method="POST">
                         <button class="border border-red-500 bg-red-500 text-white rounded-md px-2 py-1 m-2 transition duration-500 ease select-none hover:bg-red-600 focus:outline-none focus:shadow-outline" >
                             Hapus
                         </button>
@@ -45,7 +40,7 @@ class ProductController extends Controller
                 ->make();
         }
 
-        return view('pages.dashboard.product.index');
+        return view('pages.dashboard.category.index');
     }
 
     /**
@@ -55,8 +50,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = ProductCategory::all();
-        return view('pages.dashboard.product.create', compact('categories'));
+        return view('pages.dashboard.category.create');
     }
 
     /**
@@ -65,22 +59,22 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(ProductRequest $request)
+    public function store(ProductCategoryRequest $request)
     {
         $data = $request->all();
 
-        Product::create($data);
+        ProductCategory::create($data);
 
-        return redirect()->route('dashboard.product.index');
+        return redirect()->route('dashboard.category.index');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Product  $product
+     * @param  \App\Models\ProductCategory  $category
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function show(Product $product)
+    public function show(ProductCategory $category)
     {
         //
     }
@@ -88,15 +82,13 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Product  $product
+     * @param  \App\Models\ProductCategory  $category
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function edit(Product $product)
+    public function edit(ProductCategory $category)
     {
-        $categories = ProductCategory::all();
-        return view('pages.dashboard.product.edit',[
-            'item' => $product,
-            'categories' => $categories
+        return view('pages.dashboard.category.edit',[
+            'item' => $category
         ]);
     }
 
@@ -104,28 +96,28 @@ class ProductController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Product  $product
+     * @param  \App\Models\ProductCategory  $category
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(ProductRequest $request, Product $product)
+    public function update(ProductCategoryRequest $request, ProductCategory $category)
     {
         $data = $request->all();
 
-        $product->update($data);
+        $category->update($data);
 
-        return redirect()->route('dashboard.product.index');
+        return redirect()->route('dashboard.category.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Product  $product
+     * @param  \App\Models\ProductCategory  $category
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Product $product)
+    public function destroy(ProductCategory $category)
     {
-        $product->delete();
+        $category->delete();
 
-        return redirect()->route('dashboard.product.index');
+        return redirect()->route('dashboard.category.index');
     }
 }
