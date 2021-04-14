@@ -10,11 +10,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\Actions\Fortify\PasswordValidationRules;
+use Laravel\Fortify\Rules\Password;
 
 class UserController extends Controller
 {
-    use PasswordValidationRules;
 
     /**
      * @param Request $request
@@ -76,7 +75,7 @@ class UserController extends Controller
                 'name' => ['required', 'string', 'max:255'],
                 'username' => ['required', 'string', 'max:255', 'unique:users'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => $this->passwordRules()
+                'password' => ['required', 'string', new Password]
             ]);
 
             User::create([
