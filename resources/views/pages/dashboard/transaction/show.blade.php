@@ -47,10 +47,6 @@
                                 <td class="border px-6 py-4">{{ $transaction->payment }}</td>
                             </tr>
                             <tr>
-                                <th class="border px-6 py-4 text-right">Payment URL</th>
-                                <td class="border px-6 py-4">{{ $transaction->payment_url }}</td>
-                            </tr>
-                            <tr>
                                 <th class="border px-6 py-4 text-right">Total Price</th>
                                 <td class="border px-6 py-4">{{ number_format($transaction->total_price) }}</td>
                             </tr>

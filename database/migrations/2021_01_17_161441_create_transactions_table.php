@@ -20,12 +20,11 @@ class CreateTransactionsTable extends Migration
 
             $table->text('address')->nullable();
 
-            $table->bigInteger('total_price')->default(0);
-            $table->bigInteger('shipping_price')->default(0);
+            $table->float('total_price')->default(0);
+            $table->float('shipping_price')->default(0);
             $table->string('status')->default('PENDING');
 
-            $table->string('payment')->default('MIDTRANS');
-            $table->string('payment_url')->nullable();
+            $table->string('payment')->default('MANUAL');
             
             $table->softDeletes();
             $table->timestamps();

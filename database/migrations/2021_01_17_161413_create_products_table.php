@@ -17,8 +17,10 @@ class CreateProductsTable extends Migration
             $table->id();
 
             $table->string('name');
-            $table->bigInteger('price');
+            $table->float('price');
             $table->longText('description');
+
+            $table->string('tags')->nullable();
 
             $table->bigInteger('categories_id');
 
