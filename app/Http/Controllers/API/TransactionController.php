@@ -53,6 +53,7 @@ class TransactionController extends Controller
     {
         $request->validate([
             'items' => 'required|array',
+            'items.*.id' => 'exists:products,id',
             'total_price' => 'required',
             'shipping_price' => 'required',
             'status' => 'required|in:PENDING,SUCCESS,CANCELLED,FAILED,SHIPPING,SHIPPED',
