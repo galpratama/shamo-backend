@@ -1,0 +1,7 @@
+{
+    "favorites.resources": [
+        "app/Models",
+        "database/migrations"
+    ],
+    "favorites.sortOrder": "ASC"
+}
