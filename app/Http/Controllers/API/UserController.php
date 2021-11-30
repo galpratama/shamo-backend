@@ -76,6 +76,7 @@ class UserController extends Controller
                 'username' => ['required', 'string', 'max:255', 'unique:users'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
                 'phone' => ['nullable', 'string', 'max:255'],
+                'onesignal_player_id' => ['nullable', 'string', 'max:255'],
                 'password' => ['required', 'string', new Password]
             ]);
 
@@ -84,6 +85,7 @@ class UserController extends Controller
                 'email' => $request->email,
                 'username' => $request->username,
                 'phone' => $request->phone,
+                'onesignal_player_id' => $request->onesignal_player_id,
                 'password' => Hash::make($request->password),
             ]);
 
